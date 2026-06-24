@@ -3,7 +3,7 @@
    Edit price and WhatsApp link here.
    ============================================ */
 const SITE_CONFIG = {
-  price: '₹499',
+  price: '₹299',
   whatsappNumber: '919038688955',
   whatsappUrl: 'https://wa.me/919038688955?text=Hi%2C%20I%20want%20to%20know%20more%20about%20it%20and%20order.'
 };
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initStickyBar();
   initHeaderScroll();
+  initChatbot();
 });
 
 function initConfig() {
@@ -130,5 +131,146 @@ function initHeaderScroll() {
   toggle?.addEventListener('click', () => {
     const isOpen = navMenu.classList.toggle('open');
     toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+}
+
+const CHAT_FAQ = [
+  {
+    question: 'What sizes & prices?',
+    answer: 'We offer: 500g pack — ₹299, 1kg pack — ₹550. Both contain the same natural blend.',
+  },
+  {
+    question: 'Who can take this?',
+    answer:
+      'Sense-O-Vita is suitable for most age groups — students, working professionals, and elders. If you have a medical condition, please consult your doctor before use.',
+  },
+  {
+    question: "What's inside?",
+    answer:
+      'A natural blend of plant-based ingredients rich in Vitamin A, B1, B6, C, Choline, and Folic Acid — formulated to support memory, focus, and brain health.',
+  },
+  {
+    question: 'How do I take it?',
+    answer:
+      'Mix one scoop into a glass of warm milk or water daily, preferably in the morning. Stir well and enjoy.',
+  },
+  {
+    question: 'How do I order?',
+    answer:
+      'Click "Order Now" or tap below to message us directly on WhatsApp, and we\'ll confirm your order and shipping details.',
+    showWhatsApp: true,
+  },
+];
+
+function initChatbot() {
+  const bubble = document.getElementById('chat-bubble');
+  const panel = document.getElementById('chat-panel');
+  const closeBtn = document.getElementById('chat-close');
+  const chatBody = document.getElementById('chat-body');
+  const optionsEl = document.getElementById('chat-options');
+
+  if (!bubble || !panel || !chatBody || !optionsEl) return;
+
+  const welcomeMessage = chatBody.querySelector('.chat-message-bot');
+
+  function getOptionsEl() {
+    return document.getElementById('chat-options');
+  }
+
+  function openChat() {
+    panel.hidden = false;
+    requestAnimationFrame(() => panel.classList.add('open'));
+    bubble.setAttribute('aria-expanded', 'true');
+    resetChat();
+    showMainMenu();
+  }
+
+  function closeChat() {
+    panel.classList.remove('open');
+    bubble.setAttribute('aria-expanded', 'false');
+    setTimeout(() => {
+      if (!panel.classList.contains('open')) {
+        panel.hidden = true;
+      }
+    }, 250);
+    resetChat();
+  }
+
+  function resetChat() {
+    chatBody.querySelectorAll('.chat-message-user').forEach((el) => el.remove());
+    chatBody.querySelectorAll('.chat-message-bot').forEach((el) => {
+      if (el !== welcomeMessage) el.remove();
+    });
+    getOptionsEl().innerHTML = '';
+  }
+
+  function showMainMenu() {
+    const el = getOptionsEl();
+    el.innerHTML = '';
+    CHAT_FAQ.forEach((item, index) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chat-option-btn';
+      btn.textContent = item.question;
+      btn.addEventListener('click', () => showAnswer(index));
+      el.appendChild(btn);
+    });
+  }
+
+  function showAnswer(index) {
+    const item = CHAT_FAQ[index];
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chat-message chat-message-user';
+    userMsg.textContent = item.question;
+    chatBody.appendChild(userMsg);
+
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-message chat-message-bot';
+    botMsg.textContent = item.answer;
+
+    if (item.showWhatsApp) {
+      const waLink = document.createElement('a');
+      waLink.href = SITE_CONFIG.whatsappUrl;
+      waLink.className = 'chat-inline-wa';
+      waLink.setAttribute('data-whatsapp', '');
+      waLink.target = '_blank';
+      waLink.rel = 'noopener noreferrer';
+      waLink.textContent = 'Open WhatsApp →';
+      botMsg.appendChild(document.createElement('br'));
+      botMsg.appendChild(waLink);
+    }
+
+    chatBody.appendChild(botMsg);
+
+    const el = getOptionsEl();
+    el.innerHTML = '';
+    const backBtn = document.createElement('button');
+    backBtn.type = 'button';
+    backBtn.className = 'chat-back-btn';
+    backBtn.textContent = 'Ask something else';
+    backBtn.addEventListener('click', () => {
+      resetChat();
+      showMainMenu();
+    });
+    el.appendChild(backBtn);
+
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  bubble.addEventListener('click', () => {
+    if (panel.classList.contains('open')) {
+      closeChat();
+    } else {
+      openChat();
+    }
+  });
+
+  closeBtn?.addEventListener('click', closeChat);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel.classList.contains('open')) {
+      closeChat();
+    }
   });
 }
