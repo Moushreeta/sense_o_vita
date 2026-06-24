@@ -6,7 +6,7 @@ const SITE_CONFIG = {
   price: '₹499',
   razorpayLink: 'https://razorpay.com/payment-link/placeholder',
   whatsappNumber: '919038688955',
-  whatsappUrl: 'https://wa.me/919038688955?text=Hi!%20Welcome%20to%20Sense-O-Vita%20%E2%80%94%20Eat%20Healthy%2C%20Feed%20Your%20Brain%20Healthy!%20I%27d%20like%20to%20know%20more%20and%20order.'
+  whatsappUrl: 'https://wa.me/919038688955?text=Hi%2C%20I%20want%20to%20know%20more%20about%20it%20and%20order.'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
