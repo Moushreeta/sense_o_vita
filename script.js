@@ -1,10 +1,9 @@
 /* ============================================
    Sense-O-Vita — Site Configuration
-   Edit price and payment link here.
+   Edit price and WhatsApp link here.
    ============================================ */
 const SITE_CONFIG = {
   price: '₹499',
-  razorpayLink: 'https://razorpay.com/payment-link/placeholder',
   whatsappNumber: '919038688955',
   whatsappUrl: 'https://wa.me/919038688955?text=Hi%2C%20I%20want%20to%20know%20more%20about%20it%20and%20order.'
 };
@@ -23,11 +22,6 @@ function initConfig() {
   priceEls.forEach((el) => {
     el.textContent = SITE_CONFIG.price;
   });
-
-  const razorpayLink = document.getElementById('razorpay-link');
-  if (razorpayLink) {
-    razorpayLink.href = SITE_CONFIG.razorpayLink;
-  }
 
   document.querySelectorAll('[data-whatsapp]').forEach((el) => {
     el.href = SITE_CONFIG.whatsappUrl;
